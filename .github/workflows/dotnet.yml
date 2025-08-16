@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore StorySpoilersSystem/StorySpoiler.sln
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build StorySpoilersSystem/StorySpoiler.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test --configuration Release --no-build
+      run: dotnet test StorySpoilersSystem/StorySpoiler.sln --configuration Release --no-build
