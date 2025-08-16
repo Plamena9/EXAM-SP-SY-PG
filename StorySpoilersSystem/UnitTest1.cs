@@ -13,7 +13,7 @@ namespace StorySpoiler
     public class StoryTests
     {
         private RestClient client;
-        private static string lastCreatedFoodId;
+        private static string lastCreatedFoodId = string.Empty;
         private const string baseUrl = "https://d3s5nxhwblsjbi.cloudfront.net";
 
         [OneTimeSetUp]
@@ -28,7 +28,7 @@ namespace StorySpoiler
             client = new RestClient(options);
         }
         
-        private string GetJwtToken(string userName, string password)
+        private static string GetJwtToken(string userName, string password)
         {
             var logClient = new RestClient(baseUrl);
 
@@ -42,8 +42,8 @@ namespace StorySpoiler
                 throw new Exception($"Failed to retrieve JWT token. Status: {response.StatusCode}, Content: {response.Content}");
             }
 
-            var json = JsonSerializer.Deserialize<JsonElement>(response.Content);
-            return json.GetProperty("accessToken").GetString();
+            var json = JsonSerializer.Deserialize<JsonElement>(response.Content ?? string.Empty);
+            return json.GetProperty("accessToken").GetString() ?? string.Empty;
         }
 
         //tests
@@ -76,7 +76,7 @@ namespace StorySpoiler
              Assert.That(json.GetProperty("msg").GetString(), Is.EqualTo("Successfully created!"));
 
             //Store the StoryId as a static member of the static member of the test class to maintain its value between test runs
-            lastCreatedFoodId = json.GetProperty("storyId").GetString();
+            lastCreatedFoodId = json.GetProperty("storyId").GetString() ?? string.Empty;
         }
 
         [Test, Order(2)]
@@ -97,7 +97,7 @@ namespace StorySpoiler
             //Assert that the response status code is OK (200).
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             //Assert that the response message indicates the story was "Successfully edited".
-            var editedResponce = JsonSerializer.Deserialize<JsonElement>(response.Content);
+            var editedResponce = JsonSerializer.Deserialize<JsonElement>(response.Content ?? string.Empty);
             Assert.That(editedResponce.GetProperty("msg").GetString(), Is.EqualTo("Successfully edited"));
 
         }
@@ -111,7 +111,7 @@ namespace StorySpoiler
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             //Assert that the response contains a non-empty array.
-            var responceItems = JsonSerializer.Deserialize<List<ApiResponseDTO>>(response.Content);
+            var responceItems = JsonSerializer.Deserialize<List<ApiResponseDTO>>(response.Content ?? string.Empty);
             Assert.That(responceItems, Is.Not.Null);
             Assert.That(responceItems, Is.Not.Empty);
             Assert.That(responceItems, Is.InstanceOf<List<ApiResponseDTO>>());
@@ -127,7 +127,7 @@ namespace StorySpoiler
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
-            var json = JsonSerializer.Deserialize<JsonElement>(response.Content);
+            var json = JsonSerializer.Deserialize<JsonElement>(response.Content ?? string.Empty);
             Assert.That(json.GetProperty("msg").GetString(), Is.EqualTo("Deleted successfully!"));
         }
 
@@ -170,7 +170,7 @@ namespace StorySpoiler
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
 
-            var json = JsonSerializer.Deserialize<JsonElement>(response.Content);
+            var json = JsonSerializer.Deserialize<JsonElement>(response.Content ?? string.Empty);
             Assert.That(json.GetProperty("msg").GetString(), Is.EqualTo("No spoilers..."));
         }
 
@@ -185,7 +185,7 @@ namespace StorySpoiler
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
 
-            var json = JsonSerializer.Deserialize<JsonElement>(response.Content);
+            var json = JsonSerializer.Deserialize<JsonElement>(response.Content ?? string.Empty);
             Assert.That(json.GetProperty("msg").GetString(), Is.EqualTo("Unable to delete this story spoiler!"));
         }
 
