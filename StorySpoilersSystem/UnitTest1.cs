@@ -19,17 +19,16 @@ namespace StorySpoiler
         [OneTimeSetUp]
         public void Setup()
         {
-            string token = GetJwtToken("userPlams33", "123456789");
-
-            var options = new RestClientOptions(baseUrl)
+            string token = GetJwtToken("userPlams33", "123456789");
+            var options = new RestClientOptions(baseUrl)
             {
                 Authenticator = new JwtAuthenticator(token)
             };
 
             client = new RestClient(options);
         }
-
-        private string GetJwtToken(string userName, string password)
+        
+        private string GetJwtToken(string userName, string password)
         {
             var logClient = new RestClient(baseUrl);
 
