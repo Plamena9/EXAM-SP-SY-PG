@@ -12,14 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Checkout the repo
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Restore dependencies
+    - name: Restore the packages
       run: dotnet restore StorySpoilersSystem/StorySpoiler.sln
-    - name: Build
+    - name: Build the solution
       run: dotnet build StorySpoilersSystem/StorySpoiler.sln --configuration Release --no-restore
-    - name: Test
+    - name: Run all tests
       run: dotnet test StorySpoilersSystem/StorySpoiler.sln --configuration Release --no-build
